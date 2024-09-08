@@ -1,0 +1,63 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm64/configs/merge_hi6250_defconfig
+
+pkgname=linux-huawei-venus
+pkgver=4.1.18
+pkgrel=0
+pkgdesc="Huawei P9 lite kernel fork"
+arch="aarch64"
+_carch="arm64"
+_flavor="huawei-venus"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="
+	bash
+	bc
+	bison
+	devicepkg-dev
+	flex
+	openssl-dev
+	perl
+"
+
+# Source
+_repository=""
+_commit=""
+_config="config-$_flavor.$arch"
+source="
+	kernel.zip
+	$_config
+	01_keyboard_fix.patch
+	02_fix_undeclared_AID_INET.patch
+	04_make_rdr_hisi_adapter_compileable.patch
+    06-change-bfgx-and-wifi-cfg-paths.patch
+    07-fix-p2p.patch
+"
+builddir="$srcdir"
+_outdir="out"
+
+prepare() {
+	default_prepare
+	. downstreamkernel_prepare
+}
+
+build() {
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" "$_flavor" "$_outdir"
+}
+
+sha512sums="
+ccf1b958d20d0d3b89dbfd865c40e395ce4b63fe00efdf718218717b51308964e101af1e88dab1a322929db149d20c0a06fd07e80d16d4b0d240b24e8b1c5821  kernel.zip
+74515429d72e285e6e01ccd6c1dca55c750cbdb0baa8bf9d588e7c9fb4bf2d44eeec99def2b85178d619b4aa30657c751ec5c14abbd8543f3fc723bdc778936c  config-huawei-venus.aarch64
+2300cd172cad77262804e16deba4f7e028bad638c3dea1d85074eec0289bac3f6e6922b4b31f42a24d075c4954a742b3444b69819765595037c163f56a371dbc  01_keyboard_fix.patch
+33599989d5088bb58bcbebe1b33f324fca130fac7f4938e848c07abafb119af9cebf94ef4acf786b5e43e9199a8200aa216a4238a0331d426861651204aea8c8  02_fix_undeclared_AID_INET.patch
+cdc60b6c829df3b014226b9cb506ed71cf005cf5fec8d4339b54a23f052465501aaa4983ec00f33ef301db2e6a70b24a30439b3f6ce8f7c00348c05d3132ec3f  04_make_rdr_hisi_adapter_compileable.patch
+ebba6534c200dd174e0ea8915c88e7fe4cf5a5ffb59b21ab4dcf25a64bfd3ba8b9be027e1c29f7c39aa86f659431e1819371fe7d3bd78ccbd8aab82ff164671f  06-change-bfgx-and-wifi-cfg-paths.patch
+71b3783d21eff6b43aec7b97d16e64696bd39ac191984254fb77d28db17f5f940beb3e3f0516468d698f6e10e936b8d38aa97f7e39004a3a17491de454ecdccb  07-fix-p2p.patch
+"

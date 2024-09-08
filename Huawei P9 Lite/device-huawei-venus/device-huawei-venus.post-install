@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Enable screen script
+chmod 755 /etc/local.d/screen.start
+# Initialize the screen
+echo 255 > /sys/class/leds/lcd_backlight0/brightness
+chmod +x /usr/libexec/elogind/system-sleep/sleep-fix.sh
+
+

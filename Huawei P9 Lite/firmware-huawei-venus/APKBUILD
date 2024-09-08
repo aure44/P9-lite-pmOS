@@ -1,0 +1,34 @@
+pkgname=firmware-huawei-venus
+pkgver=1
+pkgrel=0
+pkgdesc="Huawei P9 Lite Firmware"
+url="https://gitlab.com/LeoTech10"
+arch="aarch64"
+license="proprietary"
+options="!check !strip !archcheck !spdx !tracedeps pmb:cross-native"
+
+# Source
+_commit="e8b74b071006ebffc7ec1828587647aa91e04a8b"
+_repository="firmware-venus"
+_url="https://gitlab.com/LeoTech10"
+source="$_repository-$_commit.tar.gz::$_url/$_repository/-/archive/$_commit.tar.gz"
+
+package() {
+	# Wifi
+	install -Dm644 "$srcdir/$_repository-$_commit/CPU_RAM_SCHED.bin" \
+		"$pkgdir/lib/firmware/postmarketos/CPU_RAM_SCHED.bin"
+	install -Dm644 "$srcdir/$_repository-$_commit/CPU_RAM_WBS.bin" \
+		"$pkgdir/lib/firmware/postmarketos/CPU_RAM_WBS.bin"
+	install -Dm644 "$srcdir/$_repository-$_commit/bfgx_and_wifi_cfg" \
+		"$pkgdir/lib/firmware/postmarketos/bfgx_and_wifi_cfg"
+	install -Dm644 "$srcdir/$_repository-$_commit/bfgx_cfg" \
+		"$pkgdir/lib/firmware/postmarketos/bfgx_cfg"
+	install -Dm644 "$srcdir/$_repository-$_commit/cr4_asic.bin" \
+		"$pkgdir/lib/firmware/postmarketos/cr4_asic.bin"
+	install -Dm644 "$srcdir/$_repository-$_commit/wifi_cfg" \
+		"$pkgdir/lib/firmware/postmarketos/wifi_cfg"
+}
+
+sha512sums="
+605fe24949a65a8a39c3e58cb6f513c510c5205d798d6842ddf8969140be32dbe6a7a6eaf7e81acab483e657bf630d07df1525711e83ef19e1986b25b080bf6b  firmware-venus-e8b74b071006ebffc7ec1828587647aa91e04a8b.tar.gz
+"

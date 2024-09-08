@@ -1,0 +1,42 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-huawei-venus
+pkgdesc="Huawei P9 lite"
+pkgver=0.1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-huawei-venus
+	mesa-dri-gallium
+	mkbootimg
+	postmarketos-base
+	msm-fb-refresher
+"
+makedepends="devicepkg-dev"
+install="device-huawei-venus.post-install"
+subpackages="$pkgname-nonfree-firmware:nonfree_firmware"
+source="deviceinfo screen.start sleep-fix.sh"
+
+build() {
+    devicepkg_build $startdir $pkgname
+}
+
+package() {
+    devicepkg_package $startdir $pkgname
+    install -Dm755 "$srcdir"/screen.start "$pkgdir"/etc/local.d/screen.start
+    install -Dm755 "$srcdir"/sleep-fix.sh "$pkgdir"/usr/libexec/elogind/system-sleep/sleep-fix.sh
+}
+
+nonfree_firmware() {
+	pkgdesc="Wifi firmware"
+	depends="firmware-huawei-venus hisi-wlan"
+    mkdir "$subpkgdir"
+}
+
+sha512sums="
+97037ee2191a2e29c5789239cb161e4f6bc3647d4adc42987900f7969f13b19f6e9adcbca7a46b1bf3f01ce8dc239f58ab46b8bea523139aa007291843838a7a  deviceinfo
+6dc9958cc9713c4598deffe13481889fb984678c45107e4b3ecfdc03e262b61da46acfc7d7fcf531f45696d67f00e5d590965cc5022435e4abc9c98fd8681219  screen.start
+2ba247339b1161cc5736b6387b57219ebfffb2b284b0e3ac0f316b30198b0169e8ddbc9f19f1af06b2c80415f3acd904edbc4fdd319307b15d6ca43250b91506  sleep-fix.sh
+"
